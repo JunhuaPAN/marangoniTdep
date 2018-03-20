@@ -156,8 +156,8 @@ void marangoniTdepFvPatchVectorField::rmap
 tmp<vectorField > marangoniTdepFvPatchVectorField::snGrad() const
 {
     //Info << "entering  marangoniTdepFvPatchVectorField::snGrad()" << endl;
-    vectorField nHat = this->patch().nf();
-    vectorField pif = this->patchInternalField();
+    vectorField nHat(this->patch().nf());
+    vectorField pif(this->patchInternalField());
     vectorField result;
     if(!db().foundObject<vectorField>("gradT")) {
  	Info << " marangoniTdepFvPatchVectorField::snGrad(): object gradT not found!" << endl;
@@ -178,16 +178,16 @@ tmp<vectorField > marangoniTdepFvPatchVectorField::snGrad() const
 	
  	fvPatchField<vector> gradT =this->patch().lookupPatchField<volVectorField, vector>("gradT");
  	fvPatchField<scalar> T =this->patch().lookupPatchField<volScalarField, scalar>("T");
- 	vectorField  gradT_internal = gradT.patchInternalField();
- 	vectorField gradTplane= transform(I - sqr(nHat),gradT_internal);
- 	vectorField pifplane= transform(I - sqr(nHat),pif);
-        scalarField T_internal = T.patchInternalField();
+ 	vectorField gradT_internal(gradT.patchInternalField());
+ 	vectorField gradTplane(transform(I - sqr(nHat),gradT_internal));
+ 	vectorField pifplane(transform(I - sqr(nHat),pif));
+        scalarField T_internal(T.patchInternalField());
 
         // Get mu from the solver patch field
  	fvPatchField<scalar> mu =this->patch().lookupPatchField<volScalarField, scalar>("mu");
-        scalarField mu_internal = mu.patchInternalField();
+        scalarField mu_internal(mu.patchInternalField());
         // Compute marangoni coeffient using value from patch field
-        scalarField marangonicoeff = gamma_/mu_internal;
+        scalarField marangonicoeff(gamma_/mu_internal);
 
         /*
         // Get mu by computing it here directly and imposing the same constraint
@@ -226,9 +226,9 @@ void marangoniTdepFvPatchVectorField::evaluate()
         this->updateCoeffs();
     }
 
-     vectorField nHat = this->patch().nf();
-     vectorField pif = this->patchInternalField();
-     scalarField deltas=this->patch().deltaCoeffs();
+     vectorField nHat(this->patch().nf());
+     vectorField pif(this->patchInternalField());
+     scalarField deltas(this->patch().deltaCoeffs());
 
      if(!db().foundObject<vectorField>("gradT")) {
  	Info << " marangoniTdepFvPatchVectorField::snGrad(): object gradT not found!" << endl;
@@ -261,16 +261,16 @@ void marangoniTdepFvPatchVectorField::evaluate()
 
  	fvPatchField<vector> gradT =this->patch().lookupPatchField<volVectorField, vector>("gradT");
  	fvPatchField<scalar> T =this->patch().lookupPatchField<volScalarField, scalar>("T");
- 	vectorField  gradT_internal = gradT.patchInternalField();
- 	vectorField gradTplane= transform(I - sqr(nHat),gradT_internal);
- 	vectorField pifplane= transform(I - sqr(nHat),pif);
-        scalarField T_internal = T.patchInternalField();
+ 	vectorField  gradT_internal(gradT.patchInternalField());
+ 	vectorField gradTplane(transform(I - sqr(nHat),gradT_internal));
+ 	vectorField pifplane(transform(I - sqr(nHat),pif));
+        scalarField T_internal(T.patchInternalField());
 
         // Get mu from the solver patch field
  	fvPatchField<scalar> mu =this->patch().lookupPatchField<volScalarField, scalar>("mu");
-        scalarField mu_internal = mu.patchInternalField();
+        scalarField mu_internal(mu.patchInternalField());
         // Compute marangoni coeffient using value from patch field
-        scalarField marangonicoeff = gamma_/mu_internal;
+        scalarField marangonicoeff(gamma_/mu_internal);
 
         /*
         // Get mu by computing it here directly and imposing the same constraint
@@ -280,7 +280,7 @@ void marangoniTdepFvPatchVectorField::evaluate()
         */
 
         // Use coefficient in final result
-	vectorField result=pifplane+marangonicoeff*gradTplane/deltas;
+	vectorField result(pifplane+marangonicoeff*gradTplane/deltas);
 
  	vectorField::operator=
  	    (
@@ -296,7 +296,7 @@ void marangoniTdepFvPatchVectorField::evaluate()
 // Return defining fields
 tmp<vectorField > marangoniTdepFvPatchVectorField::snGradTransformDiag() const
 {
-    vectorField nHat = this->patch().nf();
+    vectorField nHat(this->patch().nf());
     vectorField diag(nHat.size());
 
     diag.replace(vector::X, mag(nHat.component(vector::X)));
